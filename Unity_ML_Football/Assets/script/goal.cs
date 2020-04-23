@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class goal : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public static bool isgoal = false;
+
+    private void OnTriggerEnter(Collider other)
     {
-        
+        if(other.transform.name== "Ball")
+        {
+            isgoal = true;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerExit(Collider other)
     {
-        
+        if (other.transform.name == "Ball")
+        {
+            isgoal = false;
+        }
     }
 }
