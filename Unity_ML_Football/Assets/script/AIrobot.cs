@@ -32,8 +32,8 @@ public class AIrobot : Agent
         goal.isgoal = false;
         count = 0;
 
-        ballrig.transform.position = new Vector3(Random.Range(-3.0f, 3.0f), 1, Random.Range(-3.0f, 2.0f));
-        rig.transform.position = new Vector3(Random.Range(-3.0f, 3.0f), 1, Random.Range(-6.5f, ballrig.transform.position.z-1));
+        ballrig.transform.position = new Vector3(Random.Range(-2.5f, 2.5f), 1, Random.Range(-3.0f, 2.0f));
+        rig.transform.position = new Vector3(Random.Range(-3.0f, 3.0f), 1, Random.Range(-6.5f, ballrig.transform.position.z-2));
     }
 
     public override void CollectObservations(VectorSensor sensor)
