@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using MLAgents;
 using MLAgents.Sensors;
 
@@ -12,6 +13,9 @@ public class AIrobot : Agent
     private Rigidbody rig;
     public Rigidbody ballrig;
 
+    public Text time;
+    public Text score;
+
     private void Start()
     {
         rig = GetComponent<Rigidbody>();
@@ -20,6 +24,7 @@ public class AIrobot : Agent
     private void Update()
     {
         count += Time.deltaTime;
+        time.text = count.ToString("F3");
     }
 
     public override void OnEpisodeBegin()
@@ -32,16 +37,22 @@ public class AIrobot : Agent
         goal.isgoal = false;
         count = 0;
 
-        ballrig.transform.position = new Vector3(Random.Range(-2.5f, 2.5f), 1, Random.Range(-3.0f, 2.0f));
-        rig.transform.position = new Vector3(Random.Range(-3.0f, 3.0f), 1, Random.Range(-6.5f, ballrig.transform.position.z-2));
+        ballrig.GetComponent<TrailRenderer>().enabled = false;
+        ballrig.transform.position = new Vector3(Random.Range(-3.5f, 3.5f), 1, Random.Range(-3.0f, 2.0f));
+        ballrig.GetComponent<TrailRenderer>().enabled = true;
+
+        rig.transform.position = new Vector3(Random.Range(-4.0f, 4.0f), 1, Random.Range(-6.0f, ballrig.transform.position.z-2));
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
         sensor.AddObservation(transform.position);
-        sensor.AddObservation(ballrig.position);
         sensor.AddObservation(rig.velocity.x);
         sensor.AddObservation(rig.velocity.z);
+        sensor.AddObservation(ballrig.position);
+        sensor.AddObservation(ballrig.velocity.x);
+        sensor.AddObservation(ballrig.velocity.z);
+        //sensor.AddObservation(count);
     }
 
     public override void OnActionReceived(float[] vectorAction)
@@ -55,13 +66,22 @@ public class AIrobot : Agent
         if (goal.isgoal)
         {
             SetReward(1);
+            score.text = "+1";
             EndEpisode();
         }
 
         //fell
-        if (ballrig.position.y < -10||rig.position.y<-10||count>=60)
+        if (ballrig.position.y < -3||rig.position.y<-3)
         {
             SetReward(-1);
+            score.text = "-1";
+            EndEpisode();
+        }
+
+        //overtime
+        if (count >= 30)
+        {
+            score.text = "0";
             EndEpisode();
         }
     }
